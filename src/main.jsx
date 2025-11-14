@@ -9,5 +9,9 @@ ReactDOM.createRoot(document.getElementById('root')).render(
     <AppProvider>
       <App />
     </AppProvider>
+
+ReactDOM.createRoot(document.getElementById('root')).render(
+  <React.StrictMode>
+    <App />
   </React.StrictMode>,
 )
