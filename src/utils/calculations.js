@@ -50,7 +50,7 @@ export function getPriceTrend(prices, commodityId, marketId, days = 7) {
 
 // Compare prices across multiple markets for a specific commodity
 export function compareMarketPrices(prices, commodityId, marketIds, userLocation = null) {
-  return marketIds.map(marketId => {
+  const results = marketIds.map(marketId => {
     const market = MARKETS.find(m => m.id === marketId);
     const latestPrice = getLatestPrice(prices, commodityId, marketId);
     let distance = null;
@@ -60,10 +60,17 @@ export function compareMarketPrices(prices, commodityId, marketIds, userLocation
     }
 
     return {
-      marketId: market.id,
+      marketId: market ? market.id : marketId,
       marketName: market ? market.name : 'Unknown Market',
       price: latestPrice ? latestPrice.price : null,
       distance: distance
     };
-  }).sort((a, b) => a.price - b.price); // Sort by price, lowest first
+  });
+
+  // Sort by price, placing null prices at the end
+  return results.sort((a, b) => {
+    const aPrice = a.price === null || a.price === undefined ? Infinity : a.price;
+    const bPrice = b.price === null || b.price === undefined ? Infinity : b.price;
+    return aPrice - bPrice;
+  });
 }
